@@ -55,50 +55,15 @@ async function planMyNight() {
     document.getElementById('results-section').innerHTML =
         '<p style="color: #8888aa;">Scanning the skies...</p>';
 
-    const prompt = `You are a precise astrophotography planning tool. Generate a session plan with exactly 3 deep-sky targets. Never suggest the Moon or Sun as targets.
-Location: ${location}
-Equipment: ${equipment} telescope with a beginner DSLR camera shooting in RAW
-Date: ${date}
-Rules:
-- Only suggest targets realistically visible from the given location on the given date
-- Prioritize targets well-suited to the season and latitude
-- Never include the Moon or planets as targets, only deep-sky objects
-- Be concise and direct, no conversational filler or AI-sounding commentary
-- Do not use markdown symbols like ** or * in your response, use plain text formatting only
-- Give each target a specific peak visibility window based on when it's highest, not the same generic window for all targets
-- Vary the recommended frame count based on target brightness and size, not a fixed number for all targets
-- Vary the shutter speed based on target brightness: brighter targets like clusters use 30-60s, faint nebulae and galaxies use 90-120s
-For each target provide exactly this structure:
-TARGET 1: [Name and Messier/NGC designation]
-Type: [nebula / galaxy / cluster]
-Visibility window: [time range in local time]
-Difficulty: [Easy / Medium / Hard]
-Through your scope: [one sentence, specific and visual]
-Camera settings: ISO [value] | Shutter [value] | Shoot RAW | Aim for [number] frames
-TARGET 2: [same structure]
-TARGET 3: [same structure]
-End with one line: Best conditions note: [one sentence about tonight specifically - darkness window, moon interference, or transparency]`;
-
     try {
-        const response = await fetch(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-goog-api-key': 'YOUR_KEY'
-                },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: prompt }]
-                    }]
-                })
-            }
-        );
+        const response = await fetch('/api/plan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ location, equipment, date })
+        });
 
         const data = await response.json();
-        console.log(JSON.stringify(data, null, 2));
-        const result = data.candidates[0].content.parts[0].text;
+        const result = data.result;
 
         const targets = result.split(/TARGET \d+:/).filter(t => t.trim());
 
