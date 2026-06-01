@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Skies</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>Clear Skies</h1>
+    <p>Your personal astrophotography session planner</p>
+
+    <div id="input-section">
+        <input type="text" id="location" placeholder="Enter your city or zip code">
+        <select id="equipment">
+            <option value="refractor">Refractor Telescope</option>
+            <option value="newtonian">Newtonian Reflector</option>
+            <option value="dobsonian">Dobsonian</option>
+        </select>
+        <input type="date" id="date">
+        <button id="plan-button">Plan My Night</button>
+    </div>
+
+    <div id="results-section">
+        <p>Your session plan will appear here.</p>
+    </div>
+<script src="script.js"></script>
+</body>
+</html>
