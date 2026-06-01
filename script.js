@@ -1,44 +1,33 @@
-const imageDatabase = {
-    'M13': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Messier_13_Hubble_WikiSky.jpg/600px-Messier_13_Hubble_WikiSky.jpg',
-    'M57': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Ring_Nebula.jpg/600px-Ring_Nebula.jpg',
-    'M27': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Dumbbell_Nebula.jpg/600px-Dumbbell_Nebula.jpg',
-    'M31': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Andromeda_Galaxy_%28with_h-alpha%29.jpg/600px-Andromeda_Galaxy_%28with_h-alpha%29.jpg',
-    'M42': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg/600px-Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg',
-    'M51': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/M51_whirlpool_galaxy_black_hole.jpg/600px-M51_whirlpool_galaxy_black_hole.jpg',
-    'M101': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/M101_hires_STScI-PRC2006-10a.jpg/600px-M101_hires_STScI-PRC2006-10a.jpg',
-    'M81': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Messier_81_HST.jpg/600px-Messier_81_HST.jpg',
-    'M82': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/M82_HST_ACS_2006-14-a-large_web.jpg/600px-M82_HST_ACS_2006-14-a-large_web.jpg',
-    'M45': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Pleiades_large.jpg/600px-Pleiades_large.jpg',
-    'M44': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Praesaepe_%28Beehive_Cluster%29.jpg/600px-Praesaepe_%28Beehive_Cluster%29.jpg',
-    'M35': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/M35_Gemini.jpg/600px-M35_Gemini.jpg',
-    'M36': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Messier36.jpg/600px-Messier36.jpg',
-    'M37': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Messier37.jpg/600px-Messier37.jpg',
-    'NGC7000': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/North_America_Nebula_GALEX_WikiSky.jpg/600px-North_America_Nebula_GALEX_WikiSky.jpg'
-};
-
 async function getImage(targetText) {
-    for (const [key, url] of Object.entries(imageDatabase)) {
-        if (targetText.toUpperCase().includes(key)) {
-            return url;
-        }
-    }
-
     const firstLine = targetText.split('\n')[0].trim();
+    
+    const searchTerms = [
+        firstLine,
+        firstLine.match(/M\d+/)?.[0],
+        firstLine.match(/NGC\s?\d+/)?.[0]
+    ].filter(Boolean);
 
-    try {
-        const nasaResponse = await fetch(
-            `https://images-api.nasa.gov/search?q=${encodeURIComponent(firstLine)}&media_type=image`
-        );
-        const nasaData = await nasaResponse.json();
+    for (const term of searchTerms) {
+        try {
+            const nasaResponse = await fetch(
+                `https://images-api.nasa.gov/search?q=${encodeURIComponent(term)}&media_type=image`
+            );
+            const nasaData = await nasaResponse.json();
 
-        if (nasaData.collection.items.length > 0) {
-            return nasaData.collection.items[0].links[0].href;
+            if (nasaData.collection.items.length > 0) {
+                const items = nasaData.collection.items;
+                for (const item of items) {
+                    if (item.links && item.links[0] && item.links[0].href) {
+                        return item.links[0].href;
+                    }
+                }
+            }
+        } catch (error) {
+            console.log('NASA search failed for term:', term);
         }
-    } catch (error) {
-        console.log('NASA API fallback failed:', error);
     }
 
-    return 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Crab_Nebula.jpg/600px-Crab_Nebula.jpg';
+    return 'https://science.nasa.gov/wp-content/uploads/2023/09/hubble-variable-star-cluster.jpg';
 }
 
 async function planMyNight() {
