@@ -67,6 +67,34 @@ button:hover {
     background-color: #aed4ff;
 }
 
+#difficulty-selector {
+    display: flex;
+    gap: 8px;
+}
+
+.diff-btn {
+    flex: 1;
+    padding: 10px;
+    background-color: #12122a;
+    color: #8888aa;
+    border: 1px solid #2a2a5a;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.diff-btn.active {
+    background-color: #1a1a4a;
+    color: #7eb8f7;
+    border-color: #7eb8f7;
+}
+
+.diff-btn:hover {
+    border-color: #7eb8f7;
+    color: #7eb8f7;
+}
+
 #results-section {
     width: 100%;
     max-width: 1200px;

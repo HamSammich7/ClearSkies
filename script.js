@@ -7,6 +7,10 @@ async function getImage(targetText) {
         firstLine
     ].filter(Boolean);
 
+    const badKeywords = ['astronaut', 'engineer', 'scientist', 'president',
+        'administrator', 'center', 'facility', 'staff', 'team', 'crew',
+        'launch', 'rocket', 'shuttle', 'station', 'satellite', 'portrait'];
+
     for (const term of searchTerms) {
         try {
             const nasaResponse = await fetch(
@@ -15,9 +19,11 @@ async function getImage(targetText) {
             const nasaData = await nasaResponse.json();
 
             if (nasaData.collection.items.length > 0) {
-                const items = nasaData.collection.items;
-                for (const item of items) {
-                    if (item.links && item.links[0] && item.links[0].href) {
+                for (const item of nasaData.collection.items) {
+                    const title = (item.data?.[0]?.title || '').toLowerCase();
+                    const isBad = badKeywords.some(word => title.includes(word));
+
+                    if (!isBad && item.links?.[0]?.href) {
                         return item.links[0].href;
                     }
                 }
@@ -29,6 +35,16 @@ async function getImage(targetText) {
 
     return 'https://images-assets.nasa.gov/image/PIA12348/PIA12348~thumb.jpg';
 }
+
+let selectedDifficulty = 'beginner';
+
+document.querySelectorAll('.diff-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        selectedDifficulty = this.dataset.value;
+    });
+});
 
 async function planMyNight() {
     const location = document.getElementById('location').value;
@@ -48,7 +64,7 @@ async function planMyNight() {
         const response = await fetch('/api/plan', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ location, equipment, date })
+            body: JSON.stringify({ location, equipment, date, difficulty: selectedDifficulty })
         });
 
         const data = await response.json();
