@@ -2,9 +2,9 @@ async function getImage(targetText) {
     const firstLine = targetText.split('\n')[0].trim();
     
     const searchTerms = [
-        firstLine,
         firstLine.match(/M\d+/)?.[0],
-        firstLine.match(/NGC\s?\d+/)?.[0]
+        firstLine.match(/NGC\s?\d+/)?.[0],
+        firstLine
     ].filter(Boolean);
 
     for (const term of searchTerms) {
@@ -27,7 +27,7 @@ async function getImage(targetText) {
         }
     }
 
-    return 'https://science.nasa.gov/wp-content/uploads/2023/09/hubble-variable-star-cluster.jpg';
+    return 'https://images-assets.nasa.gov/image/PIA12348/PIA12348~thumb.jpg';
 }
 
 async function planMyNight() {
