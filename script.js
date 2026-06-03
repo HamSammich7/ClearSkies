@@ -69,6 +69,11 @@ async function planMyNight() {
 
         const data = await response.json();
         const result = data.result;
+if (!result) {
+    document.getElementById('results-section').innerHTML =
+        '<p style="color: #ff6b6b;">Could not generate a plan. Please try again.</p>';
+    return;
+}
 
         const targets = result.split(/TARGET \d+:/).filter(t => t.trim());
 

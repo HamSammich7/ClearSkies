@@ -18,7 +18,10 @@ Rules:
 - Give each target a specific peak visibility window based on when it's highest, not the same generic window for all targets
 - Vary the recommended frame count based on target brightness and size, not a fixed number for all targets
 - Vary the shutter speed based on target brightness: brighter targets like clusters use 30-60s, faint nebulae and galaxies use 90-120s
-- Difficulty level requested: ${difficulty}. For beginner: bright showpiece objects like M42, M13, M57 that are easy to find and photograph. For intermediate: smaller galaxies, fainter nebulae, objects requiring more precise tracking. For advanced: faint galaxy clusters, planetary nebulae, objects requiring long exposures and precise technique that produce stunning results.
+- Difficulty level requested: ${difficulty}. 
+  If beginner: only suggest bright showpiece objects (M42, M13, M57, M45 etc) that are easy to locate and photograph with minimal experience.
+  If intermediate: suggest objects like smaller galaxies, emission nebulae, and targets requiring accurate tracking. Avoid the 20 most common beginner Messier objects.
+  If advanced: you MUST suggest genuinely challenging, lesser-known deep sky objects - faint galaxy groups, obscure planetary nebulae, dim reflection nebulae, or challenging NGC objects that require long exposures, precise polar alignment, and post-processing skill. The difficulty rating for at least 2 targets should be Hard. Do not suggest any Messier objects for advanced mode.
 - For intermediate and advanced levels, avoid the 20 most common beginner targets and suggest lesser-known but visually rewarding objects
 For each target provide exactly this structure:
 TARGET 1: [Name and Messier/NGC designation]
