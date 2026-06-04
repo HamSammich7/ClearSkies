@@ -20,6 +20,8 @@ Rules:
 - Vary the shutter speed based on target brightness: brighter targets like clusters use 30-60s, faint nebulae and galaxies use 90-120s
 - Difficulty level: ${difficulty}. For beginner: well-known bright objects, easy to locate. For intermediate: fainter objects requiring accurate tracking, avoid the most common Messier showpieces. For advanced: prioritize challenging NGC objects, faint nebulae, and lesser-known targets that reward technical skill. If no hard targets are visible tonight, medium difficulty targets are acceptable.
 - For intermediate and advanced levels, avoid the 20 most common beginner targets and suggest lesser-known but visually rewarding objects
+- CRITICAL: All 3 targets must be different object types — do not suggest two galaxies, two clusters, or two nebulae. Pick one from each category where possible so the user gets variety.
+- CRITICAL: For advanced mode specifically, you MUST label AT LEAST 1 target as Hard difficulty. Do not suggest any Messier catalog objects at all for advanced mode. Only NGC, IC, or other lesser-known catalog objects. These should be objects that challenge even experienced astrophotographers — extremely faint surface brightness, small angular size, or requiring very long total integration times.
 For each target provide exactly this structure:
 TARGET 1: [Name and Messier/NGC designation]
 Type: [nebula / galaxy / cluster]
