@@ -48,9 +48,9 @@ End with one line: Best conditions note: [one sentence about tonight specificall
 
         const data = await response.json();
         if (!data.candidates || !data.candidates[0]) {
-    console.error('Unexpected Gemini response:', JSON.stringify(data));
-    return res.status(500).json({ error: 'Invalid response from Gemini', raw: data });
-}
+            console.error('Unexpected Gemini response:', JSON.stringify(data));
+            return res.status(500).json({ error: 'Invalid response from Gemini', raw: data });
+        }
         const result = data.candidates[0].content.parts[0].text;
         res.status(200).json({ result });
 

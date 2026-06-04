@@ -1,4 +1,4 @@
-async function getImage(targetText) {
+async function getImage(targetText, usedUrls = []) {
     const firstLine = targetText.split('\n')[0].trim();
     
     const searchTerms = [
@@ -22,9 +22,11 @@ async function getImage(targetText) {
                 for (const item of nasaData.collection.items) {
                     const title = (item.data?.[0]?.title || '').toLowerCase();
                     const isBad = badKeywords.some(word => title.includes(word));
+                    const href = item.links?.[0]?.href;
 
-                    if (!isBad && item.links?.[0]?.href) {
-                        return item.links[0].href;
+                    if (!isBad && href && !usedUrls.includes(href)) {
+                        usedUrls.push(href);
+                        return href;
                     }
                 }
             }
@@ -69,18 +71,20 @@ async function planMyNight() {
 
         const data = await response.json();
         const result = data.result;
-if (!result) {
-    document.getElementById('results-section').innerHTML =
-        '<p style="color: #ff6b6b;">Could not generate a plan. Please try again.</p>';
-    return;
-}
+
+        if (!result) {
+            document.getElementById('results-section').innerHTML =
+                '<p style="color: #ff6b6b;">Could not generate a plan. Please try again.</p>';
+            return;
+        }
 
         const targets = result.split(/TARGET \d+:/).filter(t => t.trim());
 
         const conditionsMatch = result.match(/Best conditions note:(.*)/i);
         const conditionsNote = conditionsMatch ? conditionsMatch[1].trim() : '';
 
-        const imagePromises = targets.map(target => getImage(target));
+        const usedUrls = [];
+        const imagePromises = targets.map(target => getImage(target, usedUrls));
         const images = await Promise.all(imagePromises);
 
         let cardsHTML = '<h2 style="color: #7eb8f7; margin-bottom: 24px; letter-spacing: 2px;">TONIGHT\'S PLAN</h2>';
