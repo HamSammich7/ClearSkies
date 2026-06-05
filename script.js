@@ -78,7 +78,9 @@ async function planMyNight() {
             return;
         }
 
-        const targets = result.split(/TARGET \d+:/).filter(t => t.trim());
+        const targets = result.split(/TARGET \d+:/)
+    .filter(t => t.trim())
+    .map(t => t.replace(/Best conditions note:.*/is, '').trim());
 
         const conditionsMatch = result.match(/Best conditions note:(.*)/i);
         const conditionsNote = conditionsMatch ? conditionsMatch[1].trim() : '';

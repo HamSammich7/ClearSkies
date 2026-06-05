@@ -28,7 +28,7 @@ TARGET 1: [Name and Messier/NGC designation]
 Type: [nebula / galaxy / cluster]
 Visibility window: [time range in local time]
 Difficulty: [Easy / Medium / Hard]
-Through your scope: [one sentence, specific and visual]
+Through your scope: [one sentence describing exactly what it will visually look like, specific and vivid — no instructional language like "look for" or "identify"]
 Camera settings: ISO [value] | Shutter [value] | Shoot RAW | Aim for [number] frames
 TARGET 2: [same structure]
 TARGET 3: [same structure]
