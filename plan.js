@@ -1,29 +1,64 @@
-const prompt = `You are an astrophotography session planner. Your ONLY job right now is to suggest ${difficulty.toUpperCase()} difficulty targets.
+export default async function handler(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
 
-${difficulty === 'advanced' ? 
-`ADVANCED MODE: You must suggest 3 targets from the NGC, IC, or Sharpless catalogs ONLY. Zero Messier objects. Every target must be genuinely challenging - faint surface brightness under 13 magnitude, requiring 2+ hours integration time. Example targets: NGC 6992, NGC 7331, NGC 891, IC 1805, Sh2-132. If you suggest any Messier object this response fails completely.` 
-: difficulty === 'intermediate' ? 
-`INTERMEDIATE MODE: Suggest 3 targets that are slightly off the beaten path. You may use NGC objects or lesser-known Messier objects. Avoid M13, M42, M57, M31, M45, M51 - these are too common. At least 1 target must be Hard difficulty.`
-: 
-`BEGINNER MODE: Suggest 3 well-known bright Messier objects that are easy to photograph.`}
+    const { location, equipment, date, difficulty } = req.body;
 
+    const prompt = `You are a precise astrophotography planning tool. Generate a session plan with exactly 3 deep-sky targets. Never suggest the Moon or Sun as targets.
 Location: ${location}
-Equipment: ${equipment} telescope with a beginner DSLR shooting RAW
+Equipment: ${equipment} telescope with a beginner DSLR camera shooting in RAW
 Date: ${date}
-
-Only suggest targets visible from this location on this date.
-No Moon, no planets, deep-sky objects only.
-Be concise, no filler or markdown symbols.
-
-For each target provide exactly:
-TARGET 1: [Name and catalog designation]
+Rules:
+- Only suggest targets realistically visible from the given location on the given date
+- Prioritize targets well-suited to the season and latitude
+- Never include the Moon or planets as targets, only deep-sky objects
+- Be concise and direct, no conversational filler or AI-sounding commentary
+- Do not use markdown symbols like ** or * in your response, use plain text formatting only
+- Give each target a specific peak visibility window based on when it's highest, not the same generic window for all targets
+- Vary the recommended frame count based on target brightness and size, not a fixed number for all targets
+- Vary the shutter speed based on target brightness: brighter targets like clusters use 30-60s, faint nebulae and galaxies use 90-120s
+- Audience tier: ${difficulty}.
+  If showpiece: suggest the most iconic, visually stunning Messier objects that are well-placed tonight. These should be objects that make a first-time viewer say "wow" — M42, M13, M57, M31, M45, M51 type targets. Bright, famous, can't-miss.
+  If deep_sky: suggest lesser-known Messier objects and brighter NGC targets that most casual observers haven't imaged. Avoid the 15 most common showpiece objects. These should reward a bit more patience and darker skies.
+  If off_the_map: suggest obscure, unusual, and genuinely surprising targets that even intermediate astronomers rarely image. Prioritize objects with interesting stories, strange shapes, or unexpected beauty. NGC, IC, and other non-Messier catalogs preferred. These don't need to be technically hard, just genuinely off the beaten path and worth discovering.
+- CRITICAL: All 3 targets must be different object types — do not suggest two galaxies, two clusters, or two nebulae. Pick one from each category where possible.
+For each target provide exactly this structure:
+TARGET 1: [Name and Messier/NGC designation]
 Type: [nebula / galaxy / cluster]
-Visibility window: [peak time in local time]
+Visibility window: [time range in local time]
 Difficulty: [Easy / Medium / Hard]
 Through your scope: [one sentence, specific and visual]
 Camera settings: ISO [value] | Shutter [value] | Shoot RAW | Aim for [number] frames
-
 TARGET 2: [same structure]
 TARGET 3: [same structure]
+End with one line: Best conditions note: [one sentence about tonight specifically - darkness window, moon interference, or transparency]`;
 
-Best conditions note: [one sentence about tonight]`;
+    try {
+        const response = await fetch(
+            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-goog-api-key': process.env.GEMINI_API_KEY
+                },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            }
+        );
+
+        const data = await response.json();
+        if (!data.candidates || !data.candidates[0]) {
+            console.error('Unexpected Gemini response:', JSON.stringify(data));
+            return res.status(500).json({ error: 'Invalid response from Gemini', raw: data });
+        }
+        const result = data.candidates[0].content.parts[0].text;
+        res.status(200).json({ result });
+
+    } catch (error) {
+        console.error('Error details:', error);
+        res.status(500).json({ error: 'Something went wrong', details: error.message });
+    }
+}
