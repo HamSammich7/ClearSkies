@@ -45,15 +45,17 @@ Best conditions note: [one sentence about tonight]`;
     try {
         const makeRequest = async () => {
             return await fetch(
-                'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',
+                'https://api.groq.com/openai/v1/chat/completions',
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-goog-api-key': process.env.GEMINI_API_KEY
+                        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
                     },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }]
+                        model: 'llama-3.3-70b-versatile',
+                        messages: [{ role: 'user', content: prompt }],
+                        max_tokens: 1000
                     })
                 }
             );
@@ -67,11 +69,11 @@ Best conditions note: [one sentence about tonight]`;
         }
 
         const data = await response.json();
-        if (!data.candidates || !data.candidates[0]) {
-            console.error('Unexpected Gemini response:', JSON.stringify(data));
-            return res.status(500).json({ error: 'Invalid response from Gemini', raw: data });
+        if (!data.choices || !data.choices[0]) {
+            console.error('Unexpected Groq response:', JSON.stringify(data));
+            return res.status(500).json({ error: 'Invalid response from Groq', raw: data });
         }
-        const result = data.candidates[0].content.parts[0].text;
+        const result = data.choices[0].message.content;
         res.status(200).json({ result });
 
     } catch (error) {
