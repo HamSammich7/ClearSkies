@@ -5,58 +5,66 @@ export default async function handler(req, res) {
 
     const { location, equipment, date, difficulty } = req.body;
 
-    const prompt = `You are a precise astrophotography planning tool. Generate a session plan with exactly 3 deep-sky targets. Never suggest the Moon or Sun as targets.
+    const prompt = `You are a precise astrophotography planning tool. Your target selection is determined entirely by the audience tier specified below — read that section first before selecting any targets.
+
 Location: ${location}
 Equipment: ${equipment} telescope with a beginner DSLR camera shooting in RAW
 Date: ${date}
-Rules:
+
+AUDIENCE TIER — READ THIS FIRST:
+${difficulty === 'showpiece' ? 
+`SHOWPIECE MODE: Suggest the 3 most iconic, visually stunning Messier objects visible tonight. M42, M13, M57, M31, M45, M51 type targets. Bright, famous, can't-miss objects that make a first-time viewer say wow.`
+: difficulty === 'deep_sky' ?
+`DEEP SKY MODE: Suggest 3 lesser-known Messier objects or brighter NGC targets most casual observers haven't imaged. Avoid M13, M42, M57, M31, M45, M51, M27, M81, M82. Reward patience and darker skies.`
+:
+`OFF THE MAP MODE: You must select exactly 3 objects from this list that are visible tonight — NGC 6992, NGC 7331, NGC 891, NGC 4565, IC 1805, IC 1848, NGC 2403, NGC 7789, NGC 6946, NGC 6888, NGC 3628, NGC 7380. No other objects. Check visibility for each and pick the 3 highest in the sky tonight.`}
+
+AFTER selecting targets based on the tier above, apply these rules:
 - Only suggest targets realistically visible from the given location on the given date
-- Prioritize targets well-suited to the season and latitude
-- Never include the Moon or planets as targets, only deep-sky objects
+- Never include the Moon or planets, only deep-sky objects
 - Be concise and direct, no conversational filler or AI-sounding commentary
-- Do not use markdown symbols like ** or * in your response, use plain text formatting only
-- Give each target a specific peak visibility window based on when it's highest, not the same generic window for all targets
-- Vary the recommended frame count based on target brightness and size, not a fixed number for all targets
-- Vary the shutter speed based on target brightness: brighter targets like clusters use 30-60s, faint nebulae and galaxies use 90-120s
-- Audience tier: ${difficulty}.
-  If showpiece: suggest the most iconic, visually stunning Messier objects that are well-placed tonight. These should be objects that make a first-time viewer say "wow" — M42, M13, M57, M31, M45, M51 type targets. Bright, famous, can't-miss.
-  If deep_sky: suggest lesser-known Messier objects and brighter NGC targets that most casual observers haven't imaged. Avoid the 15 most common showpiece objects. These should reward a bit more patience and darker skies.
-  If off_the_map: suggest unusual targets from this list of underappreciated objects — NGC 6992 (Eastern Veil Nebula), NGC 7331, NGC 891, NGC 4565, IC 1805 (Heart Nebula), IC 1848 (Soul Nebula), NGC 2403, NGC 7789 (Caroline's Rose), NGC 6946 (Fireworks Galaxy), NGC 5128 (Centaurus A), Sh2-132, NGC 7380 (Wizard Nebula), NGC 6888 (Crescent Nebula), NGC 3628 (Hamburger Galaxy). Pick 3 from this list that are actually visible from the given location and date. If none are visible pick the least common targets possible.
-- CRITICAL: All 3 targets must be different object types — do not suggest two galaxies, two clusters, or two nebulae. Pick one from each category where possible.
-For each target provide exactly this structure:
-TARGET 1: [Name and Messier/NGC designation]
+- No markdown symbols in your response, plain text only
+- Give each target a specific peak visibility window based on when it's highest
+- Vary frame count based on target brightness and size
+- Vary shutter speed: brighter targets like clusters use 30-60s, faint nebulae and galaxies use 90-120s
+- All 3 targets must be different object types where possible
+
+For each target provide exactly:
+TARGET 1: [Name and designation]
 Type: [nebula / galaxy / cluster]
 Visibility window: [time range in local time]
 Difficulty: [Easy / Medium / Hard]
-Through your scope: [one sentence describing exactly what it will visually look like, specific and vivid — no instructional language like "look for" or "identify"]
+Through your scope: [one sentence, specific and vivid, no instructional language]
 Camera settings: ISO [value] | Shutter [value] | Shoot RAW | Aim for [number] frames
+
 TARGET 2: [same structure]
 TARGET 3: [same structure]
-End with one line: Best conditions note: [one sentence about tonight specifically - darkness window, moon interference, or transparency]`;
+
+Best conditions note: [one sentence about tonight]`;
 
     try {
         const makeRequest = async () => {
-    return await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-goog-api-key': process.env.GEMINI_API_KEY
-            },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            })
+            return await fetch(
+                'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-goog-api-key': process.env.GEMINI_API_KEY
+                    },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                }
+            );
+        };
+
+        let response = await makeRequest();
+
+        if (response.status === 503) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            response = await makeRequest();
         }
-    );
-};
-
-let response = await makeRequest();
-
-if (response.status === 503) {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    response = await makeRequest();
-}
 
         const data = await response.json();
         if (!data.candidates || !data.candidates[0]) {
