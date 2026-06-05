@@ -21,7 +21,7 @@ Rules:
 - Audience tier: ${difficulty}.
   If showpiece: suggest the most iconic, visually stunning Messier objects that are well-placed tonight. These should be objects that make a first-time viewer say "wow" — M42, M13, M57, M31, M45, M51 type targets. Bright, famous, can't-miss.
   If deep_sky: suggest lesser-known Messier objects and brighter NGC targets that most casual observers haven't imaged. Avoid the 15 most common showpiece objects. These should reward a bit more patience and darker skies.
-  If off_the_map: suggest obscure, unusual, and genuinely surprising targets that even intermediate astronomers rarely image. Prioritize objects with interesting stories, strange shapes, or unexpected beauty. NGC, IC, and other non-Messier catalogs preferred. These don't need to be technically hard, just genuinely off the beaten path and worth discovering.
+  If off_the_map: suggest unusual targets from this list of underappreciated objects — NGC 6992 (Eastern Veil Nebula), NGC 7331, NGC 891, NGC 4565, IC 1805 (Heart Nebula), IC 1848 (Soul Nebula), NGC 2403, NGC 7789 (Caroline's Rose), NGC 6946 (Fireworks Galaxy), NGC 5128 (Centaurus A), Sh2-132, NGC 7380 (Wizard Nebula), NGC 6888 (Crescent Nebula), NGC 3628 (Hamburger Galaxy). Pick 3 from this list that are actually visible from the given location and date. If none are visible pick the least common targets possible.
 - CRITICAL: All 3 targets must be different object types — do not suggest two galaxies, two clusters, or two nebulae. Pick one from each category where possible.
 For each target provide exactly this structure:
 TARGET 1: [Name and Messier/NGC designation]
