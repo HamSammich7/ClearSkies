@@ -45,7 +45,7 @@ Best conditions note: [one sentence about tonight]`;
     try {
         const makeRequest = async () => {
             return await fetch(
-                'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+                'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',
                 {
                     method: 'POST',
                     headers: {
