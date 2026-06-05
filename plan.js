@@ -35,19 +35,28 @@ TARGET 3: [same structure]
 End with one line: Best conditions note: [one sentence about tonight specifically - darkness window, moon interference, or transparency]`;
 
     try {
-        const response = await fetch(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-goog-api-key': process.env.GEMINI_API_KEY
-                },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
-                })
-            }
-        );
+        const makeRequest = async () => {
+    return await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-goog-api-key': process.env.GEMINI_API_KEY
+            },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            })
+        }
+    );
+};
+
+let response = await makeRequest();
+
+if (response.status === 503) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    response = await makeRequest();
+}
 
         const data = await response.json();
         if (!data.candidates || !data.candidates[0]) {
