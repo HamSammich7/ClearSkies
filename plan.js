@@ -5,6 +5,89 @@ export default async function handler(req, res) {
 
     const { location, equipment, date, difficulty } = req.body;
 
+    const offTheMapTargets = [
+        'NGC 6992 (Eastern Veil Nebula)',
+        'NGC 6888 (Crescent Nebula)',
+        'IC 1805 (Heart Nebula)',
+        'IC 1848 (Soul Nebula)',
+        'NGC 7380 (Wizard Nebula)',
+        'NGC 2244 (Rosette Nebula)',
+        'NGC 7293 (Helix Nebula)',
+        'NGC 2359 (Thor\'s Helmet)',
+        'NGC 6543 (Cat\'s Eye Nebula)',
+        'NGC 7662 (Blue Snowball Nebula)',
+        'NGC 1499 (California Nebula)',
+        'NGC 6826 (Blinking Planetary Nebula)',
+        'IC 5146 (Cocoon Nebula)',
+        'NGC 7331 (Deer Lick Galaxy)',
+        'NGC 891 (Silver Sliver Galaxy)',
+        'NGC 4565 (Needle Galaxy)',
+        'NGC 3628 (Hamburger Galaxy)',
+        'NGC 2403',
+        'NGC 4631 (Whale Galaxy)',
+        'NGC 4656 (Hockey Stick Galaxy)',
+        'NGC 6503',
+        'NGC 2683',
+        'NGC 4236',
+        'NGC 7814',
+        'NGC 7479',
+        'NGC 7789 (Caroline\'s Rose)',
+        'NGC 869 and NGC 884 (Double Cluster)',
+        'NGC 752',
+        'NGC 457 (Owl Cluster)',
+        'NGC 6939',
+        'NGC 7243',
+        'NGC 6885',
+        'NGC 1502',
+        'NGC 2169 (37 Cluster)',
+        'NGC 6791',
+        'NGC 6946 (Fireworks Galaxy)',
+        'NGC 5128 (Centaurus A)',
+        'NGC 6503',
+        'NGC 7814',
+        'NGC 2683'
+    ];
+
+    let selectedTargets = null;
+
+    if (difficulty === 'off_the_map') {
+        const selectionPrompt = `You are an astronomy visibility calculator. 
+
+Location: ${location}
+Date: ${date}
+
+Here is a list of deep sky objects:
+${offTheMapTargets.join('\n')}
+
+Task: Return exactly 3 objects from this list that will be highest in the sky and best positioned for observation from the given location on the given date. Consider the season and latitude.
+
+Return ONLY the 3 object names, one per line, nothing else. No explanations, no extra text.`;
+
+        try {
+            const selectionResponse = await fetch(
+                'https://api.groq.com/openai/v1/chat/completions',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'llama-3.3-70b-versatile',
+                        messages: [{ role: 'user', content: selectionPrompt }],
+                        max_tokens: 100
+                    })
+                }
+            );
+
+            const selectionData = await selectionResponse.json();
+            selectedTargets = selectionData.choices[0].message.content.trim();
+
+        } catch (error) {
+            console.error('Stage 1 selection failed:', error);
+        }
+    }
+
     const prompt = `You are a precise astrophotography planning tool. Your target selection is determined entirely by the audience tier specified below — read that section first before selecting any targets.
 
 Location: ${location}
@@ -12,12 +95,15 @@ Equipment: ${equipment} telescope with a beginner DSLR camera shooting in RAW
 Date: ${date}
 
 AUDIENCE TIER — READ THIS FIRST:
-${difficulty === 'showpiece' ? 
+${difficulty === 'showpiece' ?
 `SHOWPIECE MODE: Suggest the 3 most iconic, visually stunning Messier objects visible tonight. M42, M13, M57, M31, M45, M51 type targets. Bright, famous, can't-miss objects that make a first-time viewer say wow.`
 : difficulty === 'deep_sky' ?
 `DEEP SKY MODE: Suggest 3 lesser-known Messier objects or brighter NGC targets most casual observers haven't imaged. Avoid M13, M42, M57, M31, M45, M51, M27, M81, M82. Reward patience and darker skies.`
 :
-`OFF THE MAP MODE: You must select exactly 3 objects from this list that are visible tonight — NGC 6992, NGC 7331, NGC 891, NGC 4565, IC 1805, IC 1848, NGC 2403, NGC 7789, NGC 6946, NGC 6888, NGC 3628, NGC 7380. No other objects. Check visibility for each and pick the 3 highest in the sky tonight.`}
+`OFF THE MAP MODE: You MUST use exactly these 3 targets and no others:
+${selectedTargets}
+
+Do not substitute, replace, or add any other objects. These are your only targets.`}
 
 AFTER selecting targets based on the tier above, apply these rules:
 - Only suggest targets realistically visible from the given location on the given date
