@@ -86,9 +86,11 @@ async function planMyNight() {
         const conditionsNote = conditionsMatch ? conditionsMatch[1].trim() : '';
 
         const usedUrls = [];
-        const imagePromises = targets.map(target => getImage(target, usedUrls));
-        const images = await Promise.all(imagePromises);
-
+        const images = [];
+for (const target of targets) {
+    const img = await getImage(target, usedUrls);
+    images.push(img);
+}
         let cardsHTML = '<h2 style="color: #7eb8f7; margin-bottom: 24px; letter-spacing: 2px;">TONIGHT\'S PLAN</h2>';
         cardsHTML += '<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px;">';
 
