@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         'NGC 6543 (Cat\'s Eye Nebula)',
         'NGC 7662 (Blue Snowball Nebula)',
         'NGC 1499 (California Nebula)',
-        'NGC 6826 (Blinking Planetary Nebula)',
+        'NGC 6826 (Blinking Planetary)',
         'IC 5146 (Cocoon Nebula)',
         'NGC 7331 (Deer Lick Galaxy)',
         'NGC 891 (Silver Sliver Galaxy)',
@@ -28,7 +28,6 @@ export default async function handler(req, res) {
         'NGC 4656 (Hockey Stick Galaxy)',
         'NGC 6503',
         'NGC 2683',
-        'NGC 4236',
         'NGC 7814',
         'NGC 7479',
         'NGC 7789 (Caroline\'s Rose)',
@@ -36,22 +35,13 @@ export default async function handler(req, res) {
         'NGC 752',
         'NGC 457 (Owl Cluster)',
         'NGC 6939',
-        'NGC 7243',
-        'NGC 6885',
-        'NGC 1502',
-        'NGC 2169 (37 Cluster)',
-        'NGC 6791',
-        'NGC 6946 (Fireworks Galaxy)',
-        'NGC 5128 (Centaurus A)',
-        'NGC 6503',
-        'NGC 7814',
-        'NGC 2683'
+        'NGC 6946 (Fireworks Galaxy)'
     ];
 
     let selectedTargets = null;
 
     if (difficulty === 'off_the_map') {
-        const selectionPrompt = `You are an astronomy visibility calculator. 
+        const selectionPrompt = `You are an astronomy visibility calculator.
 
 Location: ${location}
 Date: ${date}
@@ -59,9 +49,7 @@ Date: ${date}
 Here is a list of deep sky objects:
 ${offTheMapTargets.join('\n')}
 
-Task: Return exactly 3 objects from this list that will be highest in the sky and best positioned for observation from the given location on the given date. Consider the season and latitude.
-
-Return ONLY the 3 object names, one per line, nothing else. No explanations, no extra text.`;
+Return exactly 3 objects from this list that will be best positioned for observation from the given location on the given date based on the season and latitude. Return ONLY the 3 object names, one per line, nothing else.`;
 
         try {
             const selectionResponse = await fetch(
@@ -82,6 +70,7 @@ Return ONLY the 3 object names, one per line, nothing else. No explanations, no 
 
             const selectionData = await selectionResponse.json();
             selectedTargets = selectionData.choices[0].message.content.trim();
+            console.log('Stage 1 selected targets:', selectedTargets);
 
         } catch (error) {
             console.error('Stage 1 selection failed:', error);
@@ -100,10 +89,10 @@ ${difficulty === 'showpiece' ?
 : difficulty === 'deep_sky' ?
 `DEEP SKY MODE: Suggest 3 lesser-known Messier objects or brighter NGC targets most casual observers haven't imaged. Avoid M13, M42, M57, M31, M45, M51, M27, M81, M82. Reward patience and darker skies.`
 :
-`OFF THE MAP MODE: You MUST use exactly these 3 targets and no others:
+`OFF THE MAP MODE: You MUST describe exactly these 3 targets and no others:
 ${selectedTargets}
 
-Do not substitute, replace, or add any other objects. These are your only targets.`}
+Do not substitute or add any other objects. Format each one exactly as specified below.`}
 
 AFTER selecting targets based on the tier above, apply these rules:
 - Only suggest targets realistically visible from the given location on the given date
