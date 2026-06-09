@@ -100,7 +100,7 @@ AFTER selecting targets based on the tier above, apply these rules:
 - Be concise and direct, no conversational filler or AI-sounding commentary
 - No markdown symbols in your response, plain text only
 - Give each target a specific peak visibility window based on when it's highest
-- Vary frame count based on target brightness and size
+- Vary frame count based on target brightness and size, minimum 40 frames for clusters, minimum 60 frames for galaxies and nebulae, maximum 120 frames
 - Vary shutter speed: brighter targets like clusters use 30-60s, faint nebulae and galaxies use 90-120s
 - All 3 targets must be different object types where possible
 
