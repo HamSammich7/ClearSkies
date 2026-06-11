@@ -21,7 +21,7 @@ h1 {
     font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
     font-weight: 900;
-    color: #00ff41;
+    color: #4ade80;
     letter-spacing: 6px;
     margin-bottom: 8px;
 }
@@ -56,7 +56,7 @@ input, select {
 }
 
 input:focus, select:focus {
-    border-color: #00ff41;
+    border-color: #4ade80;
 }
 
 input::placeholder {
@@ -64,7 +64,7 @@ input::placeholder {
 }
 
 button#plan-button {
-    background-color: #00ff41;
+    background-color: #4ade80;
     color: #08080f;
     border: none;
     padding: 14px;
@@ -78,7 +78,7 @@ button#plan-button {
 }
 
 button#plan-button:hover {
-    background-color: #33ff66;
+    background-color: #6ee89b;
 }
 
 #difficulty-selector {
@@ -120,21 +120,21 @@ button#plan-button:hover {
 
 .diff-btn.active {
     background-color: #13132a;
-    color: #00ff41;
-    border-color: #00ff41;
+    color: #4ade80;
+    border-color: #4ade80;
 }
 
 .diff-btn.active .diff-label {
-    color: #00ff41;
+    color: #4ade80;
 }
 
 .diff-btn.active .diff-desc {
-    color: #00ff41;
+    color: #4ade80;
 }
 
 .diff-btn:hover {
-    border-color: #00ff41;
-    color: #00ff41;
+    border-color: #4ade80;
+    color: #4ade80;
 }
 
 #results-section {
