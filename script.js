@@ -155,7 +155,7 @@ async function planMyNight() {
             images.push(img);
         }
 
-        let cardsHTML = '<h2 style="color: #4ade80; margin-bottom: 24px; letter-spacing: 4px; font-family: Orbitron, sans-serif; font-size: 1.2rem;">TONIGHT\'S PLAN</h2>';
+        let cardsHTML = '<div class="results-header"><h2>Tonight\'s Plan</h2></div>';
         cardsHTML += '<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px;">';
 
         targets.forEach((target, index) => {

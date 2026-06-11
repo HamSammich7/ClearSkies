@@ -14,7 +14,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 20px;
+    padding: 60px 20px 40px;
 }
 
 body::before {
@@ -54,13 +54,38 @@ body > * {
     z-index: 1;
 }
 
+#hero {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+#hero::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #4ade80, transparent);
+    margin: 16px auto 0;
+}
+
 h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 900;
     color: #4ade80;
-    letter-spacing: 6px;
-    margin-bottom: 8px;
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 40px rgba(74, 222, 128, 0.3);
+}
+
+#hero p {
+    color: #666688;
+    font-size: 1rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0;
 }
 
 p {
@@ -78,7 +103,7 @@ p {
     gap: 16px;
     width: 100%;
     max-width: 480px;
-    margin-bottom: 40px;
+    margin-bottom: 48px;
 }
 
 input, select {
@@ -104,14 +129,15 @@ button#plan-button {
     background-color: #4ade80;
     color: #08080f;
     border: none;
-    padding: 14px;
+    padding: 16px;
     border-radius: 8px;
     font-size: 1rem;
     font-family: 'Orbitron', sans-serif;
     font-weight: 600;
     cursor: pointer;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
+    margin-top: 8px;
 }
 
 button#plan-button:hover {
@@ -180,9 +206,48 @@ button#plan-button:hover {
     background-color: #0e0e1f;
     border: 1px solid #1e1e3a;
     border-radius: 12px;
-    padding: 24px;
+    padding: 32px;
     min-height: 200px;
     font-family: 'Rajdhani', sans-serif;
+}
+
+#placeholder-text {
+    color: #333355;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 40px 0;
+}
+
+.results-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.results-header h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #4ade80;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+}
+
+.results-header::before,
+.results-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #1e1e3a);
+}
+
+.results-header::before {
+    background: linear-gradient(90deg, transparent, #4ade80);
+    max-width: 40px;
+    flex: 0 0 40px;
 }
 
 .target-card {
@@ -226,4 +291,5 @@ button#plan-button:hover {
     font-size: 1rem;
     white-space: pre-wrap;
     margin-bottom: 0;
+    line-height: 1.7;
 }

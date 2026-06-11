@@ -8,8 +8,10 @@
 </head>
 <body>
 
-    <h1>Clear Skies</h1>
-    <p>Your personal astrophotography session planner</p>
+    <div id="hero">
+        <h1>CLEAR SKIES</h1>
+        <p>Your personal astrophotography session planner</p>
+    </div>
 
     <div id="input-section">
         <input type="text" id="location" placeholder="Enter your city or zip code">
@@ -19,25 +21,25 @@
             <option value="dobsonian">Dobsonian</option>
         </select>
         <div id="difficulty-selector">
-    <button class="diff-btn active" data-value="showpiece">
-        <span class="diff-label">Showpiece</span>
-        <span class="diff-desc">Classic iconic targets</span>
-    </button>
-    <button class="diff-btn" data-value="deep_sky">
-        <span class="diff-label">Deep Sky</span>
-        <span class="diff-desc">Beyond the obvious</span>
-    </button>
-    <button class="diff-btn" data-value="off_the_map">
-        <span class="diff-label">Off the Map</span>
-        <span class="diff-desc">Rare & unexpected</span>
-    </button>
+            <button class="diff-btn active" data-value="showpiece">
+                <span class="diff-label">Showpiece</span>
+                <span class="diff-desc">Classic iconic targets</span>
+            </button>
+            <button class="diff-btn" data-value="deep_sky">
+                <span class="diff-label">Deep Sky</span>
+                <span class="diff-desc">Beyond the obvious</span>
+            </button>
+            <button class="diff-btn" data-value="off_the_map">
+                <span class="diff-label">Off the Map</span>
+                <span class="diff-desc">Rare & unexpected</span>
+            </button>
         </div>
         <input type="date" id="date">
         <button id="plan-button">Plan My Night</button>
     </div>
 
     <div id="results-section">
-        <p>Your session plan will appear here.</p>
+        <p id="placeholder-text">Your session plan will appear here.</p>
     </div>
 
 <script src="script.js"></script>
