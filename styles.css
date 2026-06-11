@@ -21,7 +21,7 @@ h1 {
     font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
     font-weight: 900;
-    color: #a78bfa;
+    color: #f0a500;
     letter-spacing: 6px;
     margin-bottom: 8px;
 }
@@ -64,7 +64,7 @@ input::placeholder {
 }
 
 button#plan-button {
-    background-color: #a78bfa;
+    background-color: #f0a500;
     color: #08080f;
     border: none;
     padding: 14px;
@@ -78,7 +78,7 @@ button#plan-button {
 }
 
 button#plan-button:hover {
-    background-color: #c4b5fd;
+    background-color: #f5bc3a;
 }
 
 #difficulty-selector {
