@@ -70,7 +70,7 @@ async function planMyNight() {
     }
 
     document.getElementById('results-section').innerHTML =
-        '<p style="color: #8888aa;">Scanning the skies...</p>';
+        '<p style="color: #666688;">Scanning the skies...</p>';
 
     try {
         const response = await fetch('/api/plan', {
@@ -102,7 +102,7 @@ async function planMyNight() {
             images.push(img);
         }
 
-        let cardsHTML = '<h2 style="color: #7eb8f7; margin-bottom: 24px; letter-spacing: 2px;">TONIGHT\'S PLAN</h2>';
+        let cardsHTML = '<h2 style="color: #4ade80; margin-bottom: 24px; letter-spacing: 4px; font-family: Orbitron, sans-serif;">TONIGHT\'S PLAN</h2>';
         cardsHTML += '<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px;">';
 
         targets.forEach((target, index) => {
@@ -117,7 +117,9 @@ async function planMyNight() {
                     min-width: 260px;
                     max-width: 340px;
                     line-height: 1.8;
-                ">
+                    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                " onmouseover="this.style.borderColor='#4ade80'; this.style.boxShadow='0 0 20px rgba(74,222,128,0.15)'"
+                  onmouseout="this.style.borderColor='#2a2a5a'; this.style.boxShadow='none'">
                     <img src="${imageUrl}" alt="Target image" style="
                         width: 100%;
                         height: 160px;
@@ -125,8 +127,8 @@ async function planMyNight() {
                         border-radius: 8px;
                         margin-bottom: 14px;
                     "/>
-                    <p style="color: #7eb8f7; font-weight: bold; margin-bottom: 8px;">TARGET ${index + 1}</p>
-                    <p style="white-space: pre-wrap; color: #e0e0e0; font-size: 0.9rem;">${target.trim()}</p>
+                    <p style="color: #4ade80; font-weight: bold; margin-bottom: 8px; font-family: Orbitron, sans-serif; font-size: 0.8rem; letter-spacing: 2px;">TARGET ${index + 1}</p>
+                    <p style="white-space: pre-wrap; color: #d4d4e8; font-size: 0.9rem; margin-bottom: 0;">${target.trim()}</p>
                 </div>
             `;
         });
@@ -137,10 +139,10 @@ async function planMyNight() {
             cardsHTML += `
                 <div style="
                     background-color: #0d0d2b;
-                    border: 1px solid #2a2a5a;
+                    border: 1px solid #1e1e3a;
                     border-radius: 8px;
                     padding: 14px 20px;
-                    color: #8888aa;
+                    color: #666688;
                     font-size: 0.9rem;
                 ">
                     Best conditions note: ${conditionsNote}
