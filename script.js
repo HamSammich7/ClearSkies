@@ -48,6 +48,52 @@ async function getImage(targetText, usedUrls = []) {
     return 'https://images-assets.nasa.gov/image/PIA12348/PIA12348~thumb.jpg';
 }
 
+const generateConstellation = () => {
+    const stars = [];
+    const lines = [];
+    const width = 300;
+    const height = 220;
+    
+    const numStars = 12;
+    for (let i = 0; i < numStars; i++) {
+        stars.push({
+            x: 20 + Math.random() * (width - 40),
+            y: 20 + Math.random() * (height - 40),
+            r: 1.5 + Math.random() * 1.5
+        });
+    }
+    
+    const connected = [0];
+    for (let i = 1; i < numStars; i++) {
+        const from = connected[Math.floor(Math.random() * connected.length)];
+        lines.push({ x1: stars[from].x, y1: stars[from].y, x2: stars[i].x, y2: stars[i].y });
+        connected.push(i);
+    }
+    
+    const starsSVG = stars.map((s, i) => `
+        <circle class="star" cx="${s.x}" cy="${s.y}" r="${s.r}" 
+            style="animation-delay: ${(i * 0.15).toFixed(2)}s"/>
+    `).join('');
+    
+    const linesSVG = lines.map((l, i) => `
+        <line class="line" x1="${l.x1}" y1="${l.y1}" x2="${l.x2}" y2="${l.y2}"
+            style="animation-delay: ${(0.1 + i * 0.18).toFixed(2)}s"/>
+    `).join('');
+    
+    return `
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .star { fill: #4ade80; opacity: 0; animation: starAppear 0.3s ease forwards; }
+                .line { stroke: #4ade80; stroke-width: 0.8; opacity: 0; animation: lineAppear 0.4s ease forwards; }
+                @keyframes starAppear { to { opacity: 1; } }
+                @keyframes lineAppear { to { opacity: 0.25; } }
+            </style>
+            ${linesSVG}
+            ${starsSVG}
+        </svg>
+    `;
+};
+
 let selectedDifficulty = 'showpiece';
 
 document.querySelectorAll('.diff-btn').forEach(btn => {
@@ -70,39 +116,14 @@ async function planMyNight() {
     }
 
     document.getElementById('results-section').innerHTML = `
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; gap: 24px;">
-        <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <style>
-                .star { fill: #4ade80; opacity: 0; animation: starAppear 0.3s ease forwards; }
-                .line { stroke: #4ade80; stroke-width: 1; opacity: 0; animation: lineAppear 0.4s ease forwards; }
-                @keyframes starAppear { to { opacity: 1; } }
-                @keyframes lineAppear { to { opacity: 0.3; } }
-            </style>
-            <!-- Stars -->
-            <circle class="star" cx="100" cy="30" r="2.5" style="animation-delay: 0.0s"/>
-            <circle class="star" cx="160" cy="70" r="2" style="animation-delay: 0.2s"/>
-            <circle class="star" cx="140" cy="140" r="2.5" style="animation-delay: 0.4s"/>
-            <circle class="star" cx="60" cy="150" r="2" style="animation-delay: 0.6s"/>
-            <circle class="star" cx="40" cy="80" r="2.5" style="animation-delay: 0.8s"/>
-            <circle class="star" cx="100" cy="100" r="1.5" style="animation-delay: 1.0s"/>
-            <circle class="star" cx="130" cy="55" r="1.5" style="animation-delay: 1.2s"/>
-            <circle class="star" cx="75" cy="60" r="1.5" style="animation-delay: 1.4s"/>
-            <!-- Constellation lines -->
-            <line class="line" x1="100" y1="30" x2="160" y2="70" style="animation-delay: 0.3s"/>
-            <line class="line" x1="160" y1="70" x2="140" y2="140" style="animation-delay: 0.5s"/>
-            <line class="line" x1="140" y1="140" x2="60" y2="150" style="animation-delay: 0.7s"/>
-            <line class="line" x1="60" y1="150" x2="40" y2="80" style="animation-delay: 0.9s"/>
-            <line class="line" x1="40" y1="80" x2="100" y2="30" style="animation-delay: 1.1s"/>
-            <line class="line" x1="100" y1="30" x2="100" y2="100" style="animation-delay: 1.3s"/>
-            <line class="line" x1="160" y1="70" x2="130" y2="55" style="animation-delay: 1.5s"/>
-            <line class="line" x1="40" y1="80" x2="75" y2="60" style="animation-delay: 1.7s"/>
-        </svg>
-        <p style="color: #4ade80; font-family: Orbitron, sans-serif; font-size: 0.75rem; letter-spacing: 4px; margin: 0; animation: pulse 1.5s ease-in-out infinite;">SCANNING THE SKIES</p>
-    </div>
-    <style>
-        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-    </style>
-`;
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; gap: 24px;">
+            ${generateConstellation()}
+            <p style="color: #4ade80; font-family: Orbitron, sans-serif; font-size: 0.75rem; letter-spacing: 4px; margin: 0; animation: pulse 1.5s ease-in-out infinite;">SCANNING THE SKIES</p>
+        </div>
+        <style>
+            @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        </style>
+    `;
 
     try {
         const response = await fetch('/api/plan', {
