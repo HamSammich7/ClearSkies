@@ -4,6 +4,7 @@ async function getImage(targetText, usedUrls = []) {
     const searchTerms = [
         firstLine.match(/M\d+/)?.[0],
         firstLine.match(/NGC\s?\d+/)?.[0],
+        firstLine.match(/IC\s?\d+/)?.[0],
         firstLine
     ].filter(Boolean);
 
@@ -21,10 +22,19 @@ async function getImage(targetText, usedUrls = []) {
             if (nasaData.collection.items.length > 0) {
                 for (const item of nasaData.collection.items) {
                     const title = (item.data?.[0]?.title || '').toLowerCase();
+                    const description = (item.data?.[0]?.description || '').toLowerCase();
                     const isBad = badKeywords.some(word => title.includes(word));
                     const href = item.links?.[0]?.href;
+                    const isAstronomy = title.includes('galaxy') ||
+                        title.includes('nebula') ||
+                        title.includes('cluster') ||
+                        title.includes('star') ||
+                        title.includes('ngc') ||
+                        title.includes('ic ') ||
+                        description.includes('telescope') ||
+                        description.includes('observatory');
 
-                    if (!isBad && href && !usedUrls.includes(href)) {
+                    if (!isBad && href && !usedUrls.includes(href) && isAstronomy) {
                         usedUrls.push(href);
                         return href;
                     }
@@ -38,7 +48,7 @@ async function getImage(targetText, usedUrls = []) {
     return 'https://images-assets.nasa.gov/image/PIA12348/PIA12348~thumb.jpg';
 }
 
-let selectedDifficulty = 'beginner';
+let selectedDifficulty = 'showpiece';
 
 document.querySelectorAll('.diff-btn').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -79,18 +89,19 @@ async function planMyNight() {
         }
 
         const targets = result.split(/TARGET \d+:/)
-    .filter(t => t.trim())
-    .map(t => t.replace(/Best conditions note:.*/is, '').trim());
+            .filter(t => t.trim())
+            .map(t => t.replace(/Best conditions note:.*/is, '').trim());
 
         const conditionsMatch = result.match(/Best conditions note:(.*)/i);
         const conditionsNote = conditionsMatch ? conditionsMatch[1].trim() : '';
 
         const usedUrls = [];
         const images = [];
-for (const target of targets) {
-    const img = await getImage(target, usedUrls);
-    images.push(img);
-}
+        for (const target of targets) {
+            const img = await getImage(target, usedUrls);
+            images.push(img);
+        }
+
         let cardsHTML = '<h2 style="color: #7eb8f7; margin-bottom: 24px; letter-spacing: 2px;">TONIGHT\'S PLAN</h2>';
         cardsHTML += '<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px;">';
 
