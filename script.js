@@ -108,7 +108,7 @@ async function planMyNight() {
         targets.forEach((target, index) => {
             const imageUrl = images[index];
             cardsHTML += `
-                <div style="
+                <div class="target-card" style="
                     background-color: #0d0d2b;
                     border: 1px solid #2a2a5a;
                     border-radius: 12px;
